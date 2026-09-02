@@ -564,7 +564,6 @@
     </div>
 
     <script>
- 
         const SUPABASE_URL = "https://jkdrzqbdabdcilgdygdp.supabase.co";
         const SUPABASE_KEY = "sb_publishable_SyKaRjAViq6fCiLYVp7IUQ_6kbt_s9W";
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -578,6 +577,8 @@
         window.onload = function() {
             if (canalAtual) {
                 entrarNoApp();
+            } else {
+                sairDaConta();
             }
         };
 
@@ -618,7 +619,7 @@
         }
 
         function atualizarAvataresNasTelas() {
-            const bgVal = canalAtual.avatar ? `url('${canalAtual.avatar}')` : 'none';
+            const bgVal = (canalAtual && canalAtual.avatar) ? `url('${canalAtual.avatar}')` : 'none';
             document.getElementById('main-user-avatar').style.backgroundImage = bgVal;
             document.getElementById('channel-view-avatar').style.backgroundImage = bgVal;
             document.getElementById('edit-avatar-preview').style.backgroundImage = bgVal;
@@ -683,7 +684,7 @@
             const desc = document.getElementById('upload-desc').value.trim();
 
             if (!tempVideoFile || !titulo) {
-                alert("calma ae meu mano adcione um arquivo de video,titulo,descrição");
+                alert("calma ae meu mano adcione um arquivo de video e um titulo!");
                 return;
             }
 
@@ -692,22 +693,17 @@
             btn.disabled = true;
 
             try {
-       
                 const fileName = `${Date.now()}_${tempVideoFile.name}`;
                 const { data: uploadData, error: uploadErr } = await _supabase.storage.from('videos').upload(fileName, tempVideoFile);
 
                 if (uploadErr) {
                     alert("Erro ao enviar o arquivo de vídeo: " + uploadErr.message);
-                    btn.innerText = "Publicar Vídeo";
-                    btn.disabled = false;
                     return;
                 }
 
-       
                 const { data: publicUrlData } = _supabase.storage.from('videos').getPublicUrl(fileName);
                 const finalVideoUrl = publicUrlData.publicUrl;
 
-         
                 const { error: dbErr } = await _supabase.from('videos').insert([
                     {
                         titulo: titulo,
@@ -721,6 +717,7 @@
                 if (dbErr) {
                     alert("Erro ao salvar no banco de dados: " + dbErr.message);
                 } else {
+                    alert("Vídeo publicado com sucesso!");
                     voltarParaFeed();
                 }
             } catch (err) {
@@ -735,7 +732,7 @@
             const feed = document.getElementById('feed-videos');
             feed.innerHTML = `<div class="empty-message">Carregando vídeos...</div>`;
 
-            const { data, error } = await _supabase.from('videos').select('*').order('created_at', { ascending: false });
+            const { data, error } = await _supabase.from('videos').select('*').order('id', { ascending: false });
 
             if (error || !data || data.length === 0) {
                 feed.innerHTML = `<div class="empty-message">infelizmente nao a nada postado no momento >:</div>`;
@@ -767,7 +764,7 @@
             document.getElementById('video-screen').style.display = 'flex';
 
             const player = document.getElementById('player-real');
-            if(video.videoUrl) player.src = video.videoUrl;
+            if (video.videoUrl) player.src = video.videoUrl;
             player.play();
 
             document.getElementById('watch-title').innerText = video.titulo;
@@ -829,6 +826,8 @@
                 canalAtual.descricao = novaDesc;
                 localStorage.setItem('witowwito_user', JSON.stringify(canalAtual));
                 voltarParaFeed();
+            } else {
+                alert("O nome do canal não pode ficar vazio!");
             }
         }
 
@@ -836,6 +835,8 @@
             localStorage.removeItem('witowwito_user');
             canalAtual = null;
             esconderTodasTelas();
+            document.getElementById('username').value = "";
+            document.getElementById('password').value = "";
             document.getElementById('login-screen').style.display = 'flex';
         }
     </script>
