@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>witowwito</title>
-    <!-- SDK do Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
@@ -17,7 +16,6 @@
             --accent-red: #8b0000;
             --accent-red-hover: #a00000;
         }
-
         body {
             background-color: var(--bg-dark);
             color: var(--text-main);
@@ -30,13 +28,11 @@
             height: 100vh;
             user-select: none;
         }
-
         .app-container {
             width: 920px;
             height: 620px;
             position: relative;
         }
-
         input, textarea {
             width: 100%;
             padding: 12px;
@@ -50,7 +46,6 @@
             box-sizing: border-box;
             outline: none;
         }
-
         .action-btn {
             margin-top: 15px;
             padding: 12px 25px;
@@ -64,7 +59,6 @@
             transition: 0.2s;
         }
         .action-btn:hover { background-color: #555; }
-
         .btn-voltar {
             background-color: var(--bg-card-light);
             color: white;
@@ -77,7 +71,6 @@
             transition: 0.2s;
         }
         .btn-voltar:hover { background-color: #555; }
-
         .white-circle-avatar {
             width: 65px;
             height: 65px;
@@ -94,7 +87,6 @@
             background-position: center;
             cursor: pointer;
         }
-
         #login-screen {
             display: flex;
             flex-direction: column;
@@ -126,7 +118,6 @@
             color: var(--text-sub);
             text-align: left;
         }
-
         #app-screen { display: none; height: 100%; }
         .sidebar {
             background-color: var(--bg-card);
@@ -158,7 +149,6 @@
             transition: 0.2s;
         }
         .add-btn:hover { color: #fff; border-color: #fff; transform: scale(1.05); }
-
         .main-content {
             background-color: var(--bg-card);
             margin-left: 100px;
@@ -170,8 +160,28 @@
             overflow-y: auto;
         }
         .main-content h1 { text-align: center; margin-top: 0; font-size: 34px; letter-spacing: 1px; }
-
-        .video-list { display: flex; flex-direction: column; gap: 15px; }
+        .search-container {
+            margin-bottom: 18px;
+        }
+        .search-container input {
+            width: 100%;
+            padding: 12px 18px;
+            font-size: 18px;
+            font-family: Arial, sans-serif;
+            border: 3px solid #555;
+            border-radius: 25px;
+            background-color: var(--bg-input);
+            color: #fff;
+            outline: none;
+            box-sizing: border-box;
+        }
+        .search-container input::placeholder {
+            color: #999;
+        }
+        .search-container input:focus {
+            border-color: #777;
+        }
+        .video-list { display: flex; flex-direction: column; gap: 18px; }
         .empty-message {
             text-align: center;
             color: var(--text-sub);
@@ -180,35 +190,81 @@
         }
         .video-item {
             display: flex;
-            align-items: center;
-            gap: 20px;
+            gap: 15px;
             cursor: pointer;
             background-color: var(--bg-card-light);
             padding: 12px;
-            border-radius: 10px;
+            border-radius: 12px;
             transition: 0.2s;
         }
         .video-item:hover { background-color: #484848; }
-
         .thumb {
-            width: 170px;
-            height: 95px;
-            border: 3px solid #666;
-            border-radius: 8px;
+            width: 200px;
+            height: 112px;
+            min-width: 200px;
+            border: 2px solid #555;
+            border-radius: 10px;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 16px;
+            font-size: 14px;
             text-align: center;
-            padding: 5px;
             color: var(--text-sub);
             background-color: #222;
             background-size: cover;
             background-position: center;
             box-sizing: border-box;
         }
-        .video-title { font-size: 26px; color: var(--text-main); }
-
+        .video-info {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            gap: 6px;
+            flex: 1;
+            overflow: hidden;
+        }
+        .video-title {
+            font-size: 22px;
+            color: var(--text-main);
+            line-height: 1.2;
+            margin: 0;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .channel-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 2px;
+        }
+        .channel-avatar-small {
+            width: 32px;
+            height: 32px;
+            min-width: 32px;
+            border-radius: 50%;
+            background-color: #fff;
+            border: 2px solid #333;
+            background-size: cover;
+            background-position: center;
+        }
+        .channel-name {
+            font-size: 16px;
+            color: var(--text-sub);
+            font-family: Arial, sans-serif;
+        }
+        .video-desc-preview {
+            font-size: 14px;
+            color: #999;
+            font-family: Arial, sans-serif;
+            line-height: 1.3;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            margin-top: 2px;
+        }
         .right-panel {
             position: absolute;
             right: 0;
@@ -221,7 +277,6 @@
             align-items: flex-end;
         }
         .logo { font-size: 38px; color: var(--text-main); margin-right: 15px; margin-top: 10px; letter-spacing: 1px; }
-
         .user-profile {
             display: flex;
             flex-direction: column;
@@ -239,7 +294,6 @@
             font-size: 18px;
             border-radius: 5px;
         }
-
         .profile-menu {
             display: none;
             position: absolute;
@@ -266,7 +320,6 @@
         }
         .profile-menu button:last-child { border-bottom: none; }
         .profile-menu button:hover { background-color: var(--bg-card-light); }
-
         #upload-screen {
             display: none;
             height: 100%;
@@ -326,18 +379,44 @@
             font-size: 22px;
             color: #ccc;
         }
-
         #video-screen, #channel-screen { display: none; height: 100%; flex-direction: column; }
         .video-player-box {
             width: 100%;
-            height: 360px;
+            height: 320px;
             background-color: #000;
             border-radius: 12px;
             border: 3px solid #555;
             overflow: hidden;
         }
         .video-player-box video { width: 100%; height: 100%; }
-
+        .video-channel-info {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin: 12px 0 8px 0;
+            cursor: pointer;
+            padding: 8px 10px;
+            border-radius: 10px;
+            transition: 0.2s;
+            width: fit-content;
+        }
+        .video-channel-info:hover {
+            background-color: var(--bg-card-light);
+        }
+        .video-channel-avatar {
+            width: 48px;
+            height: 48px;
+            min-width: 48px;
+            border-radius: 50%;
+            background-color: #fff;
+            border: 3px solid #333;
+            background-size: cover;
+            background-position: center;
+        }
+        .video-channel-name {
+            font-size: 22px;
+            color: var(--text-main);
+        }
         #edit-channel-screen {
             display: none;
             height: 100%;
@@ -348,7 +427,6 @@
             padding: 25px;
             box-sizing: border-box;
         }
-
         .edit-channel-container {
             display: flex;
             flex-direction: column;
@@ -357,7 +435,6 @@
             width: 100%;
             margin: 0 auto;
         }
-
         .edit-channel-body {
             display: flex;
             align-items: flex-start;
@@ -368,14 +445,12 @@
             border: 2px solid #444;
             box-shadow: inset 0 2px 6px rgba(0,0,0,0.3);
         }
-
         .avatar-edit-wrapper {
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 8px;
         }
-
         .avatar-edit-circle {
             width: 90px;
             height: 90px;
@@ -392,35 +467,30 @@
             background-size: cover;
             background-position: center;
         }
-
         .avatar-hint {
             font-size: 14px;
             color: var(--text-sub);
             font-family: Arial, sans-serif;
             text-align: center;
         }
-
         .edit-fields-wrapper {
             flex-grow: 1;
             display: flex;
             flex-direction: column;
             gap: 12px;
         }
-
         .edit-info-text {
             font-size: 24px;
             color: var(--text-main);
             margin: 0;
             line-height: 1.2;
         }
-
         .edit-fields-wrapper label {
             display: block;
             font-size: 22px;
             color: var(--text-sub);
             margin-top: 8px;
         }
-
         .logout-btn {
             background-color: var(--accent-red);
             color: white;
@@ -437,18 +507,14 @@
     </style>
 </head>
 <body>
-
     <div class="app-container">
-
         <div id="login-screen">
             <div class="login-title-box">crie seu canal primeiro</div>
             <div class="login-box">
                 <label for="username">nome do canal</label>
                 <input type="text" id="username">
-                
                 <label for="password">senha da sua escolha</label>
                 <input type="password" id="password">
-                
                 <button class="action-btn" onclick="fazerLogin()">Entrar</button>
             </div>
         </div>
@@ -457,12 +523,13 @@
             <div class="sidebar">
                 <div class="add-btn" onclick="abrirEditorUpload()">+</div>
             </div>
-
             <div class="main-content">
                 <h1>pagina inicial</h1>
+                <div class="search-container">
+                    <input type="text" id="search-input" placeholder="Pesquisar vídeos, canais..." oninput="pesquisarVideos()">
+                </div>
                 <div class="video-list" id="feed-videos"></div>
             </div>
-
             <div class="right-panel">
                 <div class="logo">witowwito</div>
                 <div class="user-profile" onclick="toggleUserMenu(event)">
@@ -479,28 +546,22 @@
 
         <div id="upload-screen">
             <button class="btn-voltar" onclick="voltarParaFeed()" style="width: 100px;">Voltar</button>
-            
             <input type="file" id="thumb-input" accept="image/*" style="display: none;">
             <input type="file" id="video-file-input" accept="video/*" style="display: none;">
-
             <div class="upload-grid">
                 <div class="thumb-picker-box" id="thumb-preview" onclick="document.getElementById('thumb-input').click()">
                     aqui voce coloca sua foto da thumb 1280 por 720 pixels respeite esse tamanho apenas clique aqui para colocar sua foto
                 </div>
-
                 <div class="file-picker-box" id="video-file-label" onclick="document.getElementById('video-file-input').click()">
                     seu arquivo de video
                 </div>
             </div>
-
             <div class="input-styled-box">
                 <input type="text" id="upload-title" placeholder="seu titulo aqui oque tu quise">
             </div>
-
             <div class="input-styled-box">
                 <textarea id="upload-desc" rows="3" placeholder="adciona uma descrição aqui oque tu quiser como eu disse"></textarea>
             </div>
-
             <button class="action-btn" id="btn-publicar" onclick="publicarVideo()" style="margin-top: 20px;">Publicar Vídeo</button>
         </div>
 
@@ -509,10 +570,14 @@
             <div class="video-player-box">
                 <video id="player-real" controls></video>
             </div>
-            <h2 id="watch-title" style="font-size: 30px; margin: 10px 0 5px 0;"></h2>
+            <div class="video-channel-info" id="watch-channel-info" onclick="abrirCanalDoVideo()">
+                <div class="video-channel-avatar" id="watch-channel-avatar"></div>
+                <div class="video-channel-name" id="watch-channel-name"></div>
+            </div>
+            <h2 id="watch-title" style="font-size: 28px; margin: 5px 0 8px 0;"></h2>
             <div style="background-color: var(--bg-card); padding: 15px; border-radius: 10px;">
-                <h3 style="margin: 0; color: var(--text-sub);">descrição</h3>
-                <p id="watch-desc" style="font-family: Arial; margin-top: 5px;"></p>
+                <h3 style="margin: 0; color: var(--text-sub); font-size: 18px;">descrição</h3>
+                <p id="watch-desc" style="font-family: Arial; margin-top: 8px; font-size: 16px; line-height: 1.4;"></p>
             </div>
         </div>
 
@@ -525,7 +590,7 @@
                     <p id="channel-view-desc" style="margin: 5px 0 0 0; color: var(--text-sub); font-family: Arial;"></p>
                 </div>
             </div>
-            <div style="margin-top: 20px; background-color: var(--bg-card); padding: 20px; border-radius: 12px; flex-grow: 1;">
+            <div style="margin-top: 20px; background-color: var(--bg-card); padding: 20px; border-radius: 12px; flex-grow: 1; overflow-y: auto;">
                 <h3 style="margin-top: 0;">Vídeos postados</h3>
                 <div class="video-list" id="channel-videos-list"></div>
             </div>
@@ -533,43 +598,36 @@
 
         <div id="edit-channel-screen">
             <input type="file" id="avatar-input" accept="image/*" style="display: none;">
-
             <div class="edit-channel-container">
                 <button class="btn-voltar" onclick="voltarParaFeed()" style="width: 100px;">Voltar</button>
-                
                 <div class="edit-channel-body">
                     <div class="avatar-edit-wrapper">
                         <div class="avatar-edit-circle" id="edit-avatar-preview" onclick="document.getElementById('avatar-input').click()"></div>
                         <span class="avatar-hint">Clique para trocar foto</span>
                     </div>
-
                     <div class="edit-fields-wrapper">
                         <p class="edit-info-text">
                             o nome do seu canal e <span id="current-name-label" style="color:#fff;"></span>. deseja trocar o nome do seu canal voce podera muda-lo
                         </p>
-                        
                         <input type="text" id="edit-name-input" placeholder="nome de exemplo <=< jubireu">
-                        
                         <label>descrição do canal alto explicativo ne</label>
                         <textarea id="edit-desc-input" rows="3" placeholder="descricao doque tu quiser exemplo"></textarea>
-                        
                         <button class="action-btn" onclick="salvarAlteracoesCanal()">Salvar Alterações</button>
                     </div>
                 </div>
             </div>
-
             <button class="logout-btn" onclick="sairDaConta()">sair da conta</button>
         </div>
-
     </div>
 
     <script>
         const SUPABASE_URL = "https://jkdrzqbdabdcilgdygdp.supabase.co";
         const SUPABASE_KEY = "sb_publishable_SyKaRjAViq6fCiLYVp7IUQ_6kbt_s9W";
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
+        
         let canalAtual = JSON.parse(localStorage.getItem('witowwito_user')) || null;
         let listaVideos = [];
+        let videoAtualAberto = null;
         
         let tempThumbData = "";
         let tempVideoFile = null;
@@ -595,12 +653,10 @@
         function fazerLogin() {
             const nome = document.getElementById('username').value.trim();
             const senha = document.getElementById('password').value.trim();
-
             if (!nome || !senha) {
                 alert("voce nao colocou um desses, nome ou senha");
                 return;
             }
-
             canalAtual = { 
                 nome: nome, 
                 descricao: "Nenhuma descrição informada.",
@@ -615,6 +671,7 @@
             document.getElementById('app-screen').style.display = 'block';
             document.getElementById('display-username').innerText = canalAtual.nome;
             atualizarAvataresNasTelas();
+            document.getElementById('search-input').value = "";
             renderizarFeed();
         }
 
@@ -647,7 +704,6 @@
         function abrirEditorUpload() {
             esconderTodasTelas();
             document.getElementById('upload-screen').style.display = 'flex';
-            
             tempThumbData = "";
             tempVideoFile = null;
             document.getElementById('thumb-preview').style.backgroundImage = 'none';
@@ -682,38 +738,33 @@
         async function publicarVideo() {
             const titulo = document.getElementById('upload-title').value.trim();
             const desc = document.getElementById('upload-desc').value.trim();
-
             if (!tempVideoFile || !titulo) {
                 alert("calma ae meu mano adcione um arquivo de video e um titulo!");
                 return;
             }
-
             const btn = document.getElementById('btn-publicar');
             btn.innerText = "Enviando vídeo...";
             btn.disabled = true;
-
             try {
                 const fileName = `${Date.now()}_${tempVideoFile.name}`;
                 const { data: uploadData, error: uploadErr } = await _supabase.storage.from('videos').upload(fileName, tempVideoFile);
-
                 if (uploadErr) {
                     alert("Erro ao enviar o arquivo de vídeo: " + uploadErr.message);
                     return;
                 }
-
                 const { data: publicUrlData } = _supabase.storage.from('videos').getPublicUrl(fileName);
                 const finalVideoUrl = publicUrlData.publicUrl;
-
+                
                 const { error: dbErr } = await _supabase.from('videos').insert([
                     {
                         titulo: titulo,
                         descricao: desc || "Sem descrição.",
                         autor: canalAtual.nome,
                         thumb: tempThumbData,
-                        videoUrl: finalVideoUrl
+                        videoUrl: finalVideoUrl,
+                        autor_avatar: canalAtual.avatar || ""
                     }
                 ]);
-
                 if (dbErr) {
                     alert("Erro ao salvar no banco de dados: " + dbErr.message);
                 } else {
@@ -728,53 +779,129 @@
             }
         }
 
-        async function renderizarFeed() {
+        function criarVideoItem(v) {
+            const item = document.createElement('div');
+            item.className = 'video-item';
+            item.onclick = () => abrirVideoPlayer(v);
+            
+            const thumbStyle = v.thumb ? `style="background-image: url('${v.thumb}')"` : "";
+            const thumbText = v.thumb ? "" : "sem capa amigo >:";
+            const avatarStyle = v.autor_avatar ? `style="background-image: url('${v.autor_avatar}')"` : "";
+            const descCurta = v.descricao && v.descricao !== "Sem descrição." ? v.descricao : "";
+            
+            item.innerHTML = `
+                <div class="thumb" ${thumbStyle}>${thumbText}</div>
+                <div class="video-info">
+                    <div class="video-title">${v.titulo}</div>
+                    <div class="channel-row">
+                        <div class="channel-avatar-small" ${avatarStyle}></div>
+                        <div class="channel-name">${v.autor}</div>
+                    </div>
+                    ${descCurta ? `<div class="video-desc-preview">${descCurta}</div>` : ""}
+                </div>
+            `;
+            return item;
+        }
+
+        async function renderizarFeed(filtro = "") {
             const feed = document.getElementById('feed-videos');
             feed.innerHTML = `<div class="empty-message">Carregando vídeos...</div>`;
-
+            
             const { data, error } = await _supabase.from('videos').select('*').order('id', { ascending: false });
-
+            
             if (error || !data || data.length === 0) {
                 feed.innerHTML = `<div class="empty-message">infelizmente nao a nada postado no momento >:</div>`;
                 listaVideos = [];
                 return;
             }
-
+            
             listaVideos = data;
+            
+            let videosFiltrados = listaVideos;
+            if (filtro.trim() !== "") {
+                const termo = filtro.toLowerCase().trim();
+                videosFiltrados = listaVideos.filter(v => 
+                    (v.titulo && v.titulo.toLowerCase().includes(termo)) ||
+                    (v.descricao && v.descricao.toLowerCase().includes(termo)) ||
+                    (v.autor && v.autor.toLowerCase().includes(termo))
+                );
+            }
+            
             feed.innerHTML = "";
-
-            listaVideos.forEach(v => {
-                const item = document.createElement('div');
-                item.className = 'video-item';
-                item.onclick = () => abrirVideoPlayer(v);
-                
-                const thumbStyle = v.thumb ? `style="background-image: url('${v.thumb}')"` : "";
-                const thumbText = v.thumb ? "" : "sem capa amigo >:";
-
-                item.innerHTML = `
-                    <div class="thumb" ${thumbStyle}>${thumbText}</div>
-                    <div class="video-title">${v.titulo}</div>
-                `;
-                feed.appendChild(item);
+            
+            if (videosFiltrados.length === 0) {
+                feed.innerHTML = `<div class="empty-message">Nenhum vídeo encontrado para "${filtro}"</div>`;
+                return;
+            }
+            
+            videosFiltrados.forEach(v => {
+                feed.appendChild(criarVideoItem(v));
             });
+        }
+
+        function pesquisarVideos() {
+            const termo = document.getElementById('search-input').value;
+            renderizarFeed(termo);
         }
 
         function abrirVideoPlayer(video) {
             esconderTodasTelas();
             document.getElementById('video-screen').style.display = 'flex';
-
+            
+            videoAtualAberto = video;
+            
             const player = document.getElementById('player-real');
             if (video.videoUrl) player.src = video.videoUrl;
             player.play();
-
+            
             document.getElementById('watch-title').innerText = video.titulo;
             document.getElementById('watch-desc').innerText = video.descricao;
+            document.getElementById('watch-channel-name').innerText = video.autor;
+            
+            const avatarEl = document.getElementById('watch-channel-avatar');
+            if (video.autor_avatar) {
+                avatarEl.style.backgroundImage = `url('${video.autor_avatar}')`;
+            } else {
+                avatarEl.style.backgroundImage = 'none';
+            }
+        }
+
+        function abrirCanalDoVideo() {
+            if (!videoAtualAberto) return;
+            
+            esconderTodasTelas();
+            document.getElementById('channel-screen').style.display = 'flex';
+            
+            document.getElementById('channel-view-name').innerText = videoAtualAberto.autor;
+            document.getElementById('channel-view-desc').innerText = "Canal de " + videoAtualAberto.autor;
+            
+            const avatarEl = document.getElementById('channel-view-avatar');
+            if (videoAtualAberto.autor_avatar) {
+                avatarEl.style.backgroundImage = `url('${videoAtualAberto.autor_avatar}')`;
+            } else {
+                avatarEl.style.backgroundImage = 'none';
+            }
+            
+            const container = document.getElementById('channel-videos-list');
+            container.innerHTML = "";
+            
+            const videosDoCanal = listaVideos.filter(v => v.autor === videoAtualAberto.autor);
+            
+            if (videosDoCanal.length === 0) {
+                container.innerHTML = `<p style="color:var(--text-sub); font-family:Arial;">Esse canal ainda não postou nada.</p>`;
+                return;
+            }
+            
+            videosDoCanal.forEach(v => {
+                container.appendChild(criarVideoItem(v));
+            });
         }
 
         function voltarParaFeed() {
             const player = document.getElementById('player-real');
             player.pause();
             player.src = "";
+            videoAtualAberto = null;
             entrarNoApp();
         }
 
@@ -784,27 +911,19 @@
             document.getElementById('channel-view-name').innerText = canalAtual.nome;
             document.getElementById('channel-view-desc').innerText = canalAtual.descricao;
             atualizarAvataresNasTelas();
-
+            
             const container = document.getElementById('channel-videos-list');
             container.innerHTML = "";
+            
             const meusVideos = listaVideos.filter(v => v.autor === canalAtual.nome);
-
+            
             if (meusVideos.length === 0) {
                 container.innerHTML = `<p style="color:var(--text-sub); font-family:Arial;">infelizmente tu nao postou nada que tal experimentar postar alguma coisa :></p>`;
                 return;
             }
-
+            
             meusVideos.forEach(v => {
-                const item = document.createElement('div');
-                item.className = 'video-item';
-                item.onclick = () => abrirVideoPlayer(v);
-                const thumbStyle = v.thumb ? `style="background-image: url('${v.thumb}')"` : "";
-                const thumbText = v.thumb ? "" : "sem capa amigo >:";
-                item.innerHTML = `
-                    <div class="thumb" ${thumbStyle}>${thumbText}</div>
-                    <div class="video-title">${v.titulo}</div>
-                `;
-                container.appendChild(item);
+                container.appendChild(criarVideoItem(v));
             });
         }
 
@@ -820,7 +939,6 @@
         function salvarAlteracoesCanal() {
             const novoNome = document.getElementById('edit-name-input').value.trim();
             const novaDesc = document.getElementById('edit-desc-input').value.trim();
-
             if (novoNome) {
                 canalAtual.nome = novoNome;
                 canalAtual.descricao = novaDesc;
