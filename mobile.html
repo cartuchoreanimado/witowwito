@@ -1,0 +1,1079 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>witowwito</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root {
+            --bg-dark: #1a1a1a;
+            --bg-card: #2a2a2a;
+            --bg-card-light: #363636;
+            --bg-input: #444444;
+            --text-main: #f0f0f0;
+            --text-sub: #b0b0b0;
+            --accent-red: #8b0000;
+            --accent-red-hover: #a00000;
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            user-select: none;
+            overflow-x: hidden;
+        }
+
+        /* ===== LOGIN ===== */
+        #login-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .login-title-box {
+            background-color: var(--bg-card-light);
+            color: var(--text-main);
+            padding: 14px 28px;
+            border-radius: 12px;
+            font-size: 22px;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        .login-box {
+            background-color: var(--bg-card);
+            padding: 28px 24px;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+        }
+
+        .login-box label {
+            display: block;
+            font-size: 20px;
+            margin-top: 16px;
+            color: var(--text-sub);
+            text-align: left;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 14px;
+            font-size: 17px;
+            font-family: Arial, sans-serif;
+            border: 3px solid #555;
+            border-radius: 10px;
+            background-color: var(--bg-input);
+            color: #fff;
+            margin-top: 6px;
+            outline: none;
+        }
+
+        .action-btn {
+            margin-top: 20px;
+            padding: 14px 28px;
+            font-size: 20px;
+            font-family: inherit;
+            background-color: var(--bg-card-light);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+            transition: 0.2s;
+        }
+
+        .action-btn:active {
+            background-color: #555;
+            transform: scale(0.98);
+        }
+
+        /* ===== APP SCREEN ===== */
+        #app-screen {
+            display: none;
+            min-height: 100vh;
+            padding-bottom: 90px;
+        }
+
+        .top-bar {
+            background-color: var(--bg-card);
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            border-bottom: 2px solid #333;
+        }
+
+        .logo {
+            font-size: 26px;
+            letter-spacing: 1px;
+        }
+
+        .user-profile-mobile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .white-circle-avatar {
+            width: 42px;
+            height: 42px;
+            min-width: 42px;
+            background-color: #ffffff;
+            border-radius: 50%;
+            border: 2px solid #111;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .user-name-tag {
+            background-color: var(--bg-card-light);
+            color: var(--text-main);
+            padding: 4px 10px;
+            font-size: 15px;
+            border-radius: 6px;
+            max-width: 110px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .profile-menu {
+            display: none;
+            position: absolute;
+            top: 60px;
+            right: 12px;
+            background-color: var(--bg-card);
+            border: 3px solid #555;
+            border-radius: 10px;
+            width: 170px;
+            z-index: 100;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.6);
+            overflow: hidden;
+        }
+
+        .profile-menu button {
+            width: 100%;
+            padding: 14px 16px;
+            background: none;
+            border: none;
+            color: var(--text-main);
+            font-family: inherit;
+            font-size: 18px;
+            text-align: left;
+            cursor: pointer;
+            border-bottom: 1px solid #444;
+        }
+
+        .profile-menu button:last-child {
+            border-bottom: none;
+        }
+
+        .profile-menu button:active {
+            background-color: var(--bg-card-light);
+        }
+
+        .main-content {
+            padding: 16px;
+        }
+
+        .main-content h1 {
+            text-align: center;
+            margin: 0 0 16px 0;
+            font-size: 26px;
+            letter-spacing: 1px;
+        }
+
+        .search-container {
+            margin-bottom: 18px;
+        }
+
+        .search-container input {
+            width: 100%;
+            padding: 13px 18px;
+            font-size: 16px;
+            border-radius: 25px;
+            border: 3px solid #555;
+        }
+
+        .video-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .empty-message {
+            text-align: center;
+            color: var(--text-sub);
+            font-size: 18px;
+            margin-top: 60px;
+            padding: 0 20px;
+        }
+
+        /* ===== VIDEO CARD MOBILE ===== */
+        .video-item {
+            background-color: var(--bg-card-light);
+            border-radius: 14px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: 0.15s;
+        }
+
+        .video-item:active {
+            transform: scale(0.98);
+            background-color: #484848;
+        }
+
+        .thumb {
+            width: 100%;
+            height: 200px;
+            background-color: #222;
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--text-sub);
+            font-size: 15px;
+            text-align: center;
+            padding: 10px;
+        }
+
+        .video-info {
+            padding: 12px 14px 14px 14px;
+        }
+
+        .video-title {
+            font-size: 18px;
+            line-height: 1.25;
+            margin: 0 0 8px 0;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .channel-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .channel-avatar-small {
+            width: 28px;
+            height: 28px;
+            min-width: 28px;
+            border-radius: 50%;
+            background-color: #fff;
+            border: 2px solid #333;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .channel-name {
+            font-size: 14px;
+            color: var(--text-sub);
+            font-family: Arial, sans-serif;
+        }
+
+        .video-desc-preview {
+            font-size: 13px;
+            color: #999;
+            font-family: Arial, sans-serif;
+            line-height: 1.3;
+            margin-top: 6px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        /* ===== FLOATING ADD BUTTON ===== */
+        .fab-add {
+            position: fixed;
+            bottom: 24px;
+            right: 20px;
+            width: 62px;
+            height: 62px;
+            border-radius: 50%;
+            background-color: var(--bg-card-light);
+            border: 3px solid #666;
+            color: var(--text-main);
+            font-size: 42px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 40;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+            line-height: 0;
+            transition: 0.2s;
+        }
+
+        .fab-add:active {
+            transform: scale(0.92);
+            background-color: #555;
+        }
+
+        /* ===== COMMON BUTTONS ===== */
+        .btn-voltar {
+            background-color: var(--bg-card-light);
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            font-family: inherit;
+            font-size: 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-bottom: 14px;
+        }
+
+        .btn-voltar:active {
+            background-color: #555;
+        }
+
+        /* ===== UPLOAD SCREEN ===== */
+        #upload-screen {
+            display: none;
+            min-height: 100vh;
+            padding: 16px;
+            background-color: var(--bg-dark);
+        }
+
+        .thumb-picker-box {
+            background-color: #000;
+            border: 3px solid #444;
+            border-radius: 14px;
+            height: 200px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 16px;
+            cursor: pointer;
+            font-size: 17px;
+            color: #ccc;
+            background-size: cover;
+            background-position: center;
+            margin-bottom: 14px;
+        }
+
+        .file-picker-box {
+            background-color: var(--bg-card-light);
+            border: 3px solid #333;
+            border-radius: 12px;
+            height: 56px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            font-size: 18px;
+            margin-bottom: 14px;
+        }
+
+        .input-styled-box {
+            background-color: var(--bg-card-light);
+            border: 3px solid #333;
+            border-radius: 12px;
+            margin-bottom: 14px;
+            padding: 4px;
+        }
+
+        .input-styled-box input,
+        .input-styled-box textarea {
+            background: transparent;
+            border: none;
+            font-size: 17px;
+            color: #ccc;
+        }
+
+        /* ===== VIDEO PLAYER SCREEN ===== */
+        #video-screen {
+            display: none;
+            min-height: 100vh;
+            padding: 12px 16px 30px 16px;
+            background-color: var(--bg-dark);
+        }
+
+        .video-player-box {
+            width: 100%;
+            background-color: #000;
+            border-radius: 12px;
+            border: 2px solid #555;
+            overflow: hidden;
+            aspect-ratio: 16/9;
+        }
+
+        .video-player-box video {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .video-channel-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 14px 0 10px 0;
+            padding: 8px 10px;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .video-channel-info:active {
+            background-color: var(--bg-card-light);
+        }
+
+        .video-channel-avatar {
+            width: 44px;
+            height: 44px;
+            min-width: 44px;
+            border-radius: 50%;
+            background-color: #fff;
+            border: 2px solid #333;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .video-channel-name {
+            font-size: 18px;
+        }
+
+        #watch-title {
+            font-size: 20px;
+            margin: 0 0 12px 0;
+            line-height: 1.3;
+        }
+
+        .desc-box {
+            background-color: var(--bg-card);
+            padding: 14px;
+            border-radius: 12px;
+        }
+
+        .desc-box h3 {
+            margin: 0;
+            color: var(--text-sub);
+            font-size: 15px;
+        }
+
+        #watch-desc {
+            font-family: Arial, sans-serif;
+            margin-top: 8px;
+            font-size: 15px;
+            line-height: 1.45;
+            color: #ddd;
+        }
+
+        /* ===== CHANNEL SCREEN ===== */
+        #channel-screen {
+            display: none;
+            min-height: 100vh;
+            padding: 12px 16px 30px 16px;
+        }
+
+        .channel-header {
+            background-color: var(--bg-card);
+            padding: 18px;
+            border-radius: 14px;
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+
+        .channel-header .white-circle-avatar {
+            width: 70px;
+            height: 70px;
+            min-width: 70px;
+        }
+
+        #channel-view-name {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        #channel-view-desc {
+            margin: 6px 0 0 0;
+            color: var(--text-sub);
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+        }
+
+        .channel-videos-box {
+            background-color: var(--bg-card);
+            padding: 16px;
+            border-radius: 14px;
+        }
+
+        .channel-videos-box h3 {
+            margin: 0 0 14px 0;
+            font-size: 18px;
+        }
+
+        /* ===== EDIT CHANNEL ===== */
+        #edit-channel-screen {
+            display: none;
+            min-height: 100vh;
+            padding: 16px;
+            background-color: var(--bg-dark);
+        }
+
+        .edit-channel-body {
+            background-color: var(--bg-card-light);
+            padding: 20px;
+            border-radius: 14px;
+            border: 2px solid #444;
+            margin-bottom: 20px;
+        }
+
+        .avatar-edit-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .avatar-edit-circle {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            background-color: #fff;
+            border: 4px solid #111;
+            background-size: cover;
+            background-position: center;
+            cursor: pointer;
+        }
+
+        .avatar-hint {
+            font-size: 13px;
+            color: var(--text-sub);
+            font-family: Arial, sans-serif;
+        }
+
+        .edit-info-text {
+            font-size: 17px;
+            line-height: 1.35;
+            margin: 0 0 12px 0;
+        }
+
+        .edit-fields-wrapper label {
+            display: block;
+            font-size: 16px;
+            color: var(--text-sub);
+            margin-top: 14px;
+            margin-bottom: 4px;
+        }
+
+        .logout-btn {
+            background-color: var(--accent-red);
+            color: white;
+            border: 3px solid #500;
+            padding: 14px 24px;
+            font-size: 18px;
+            font-family: inherit;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .logout-btn:active {
+            background-color: var(--accent-red-hover);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- LOGIN -->
+    <div id="login-screen">
+        <div class="login-title-box">crie seu canal primeiro</div>
+        <div class="login-box">
+            <label for="username">nome do canal</label>
+            <input type="text" id="username" placeholder="digite o nome">
+            <label for="password">senha da sua escolha</label>
+            <input type="password" id="password" placeholder="digite a senha">
+            <button class="action-btn" onclick="fazerLogin()">Entrar</button>
+        </div>
+    </div>
+
+    <!-- APP (FEED) -->
+    <div id="app-screen">
+        <div class="top-bar">
+            <div class="logo">witowwito</div>
+            <div class="user-profile-mobile" onclick="toggleUserMenu(event)">
+                <div class="white-circle-avatar" id="main-user-avatar"></div>
+                <div class="user-name-tag" id="display-username">user</div>
+            </div>
+        </div>
+
+        <div class="profile-menu" id="profile-menu">
+            <button onclick="abrirMeuCanal()">Ver canal</button>
+            <button onclick="abrirEditarCanal()">Editar canal</button>
+            <button onclick="sairDaConta()">Sair da conta</button>
+        </div>
+
+        <div class="main-content">
+            <h1>pagina inicial</h1>
+            <div class="search-container">
+                <input type="text" id="search-input" placeholder="Pesquisar vídeos, canais..." oninput="pesquisarVideos()">
+            </div>
+            <div class="video-list" id="feed-videos"></div>
+        </div>
+
+        <div class="fab-add" onclick="abrirEditorUpload()">+</div>
+    </div>
+
+    <!-- UPLOAD -->
+    <div id="upload-screen">
+        <button class="btn-voltar" onclick="voltarParaFeed()">← Voltar</button>
+
+        <input type="file" id="thumb-input" accept="image/*" style="display:none">
+        <input type="file" id="video-file-input" accept="video/*" style="display:none">
+
+        <div class="thumb-picker-box" id="thumb-preview" onclick="document.getElementById('thumb-input').click()">
+            clique aqui para colocar a thumb<br>(recomendado 1280x720)
+        </div>
+
+        <div class="file-picker-box" id="video-file-label" onclick="document.getElementById('video-file-input').click()">
+            seu arquivo de video
+        </div>
+
+        <div class="input-styled-box">
+            <input type="text" id="upload-title" placeholder="seu titulo aqui">
+        </div>
+
+        <div class="input-styled-box">
+            <textarea id="upload-desc" rows="4" placeholder="adiciona uma descrição aqui"></textarea>
+        </div>
+
+        <button class="action-btn" id="btn-publicar" onclick="publicarVideo()">Publicar Vídeo</button>
+    </div>
+
+    <!-- PLAYER -->
+    <div id="video-screen">
+        <button class="btn-voltar" onclick="voltarParaFeed()">← Voltar</button>
+
+        <div class="video-player-box">
+            <video id="player-real" controls playsinline></video>
+        </div>
+
+        <div class="video-channel-info" id="watch-channel-info" onclick="abrirCanalDoVideo()">
+            <div class="video-channel-avatar" id="watch-channel-avatar"></div>
+            <div class="video-channel-name" id="watch-channel-name"></div>
+        </div>
+
+        <h2 id="watch-title"></h2>
+
+        <div class="desc-box">
+            <h3>descrição</h3>
+            <p id="watch-desc"></p>
+        </div>
+    </div>
+
+    <!-- CHANNEL -->
+    <div id="channel-screen">
+        <button class="btn-voltar" onclick="voltarParaFeed()">← Voltar</button>
+
+        <div class="channel-header">
+            <div class="white-circle-avatar" id="channel-view-avatar"></div>
+            <div>
+                <h2 id="channel-view-name"></h2>
+                <p id="channel-view-desc"></p>
+            </div>
+        </div>
+
+        <div class="channel-videos-box">
+            <h3>Vídeos postados</h3>
+            <div class="video-list" id="channel-videos-list"></div>
+        </div>
+    </div>
+
+    <!-- EDIT CHANNEL -->
+    <div id="edit-channel-screen">
+        <button class="btn-voltar" onclick="voltarParaFeed()">← Voltar</button>
+
+        <input type="file" id="avatar-input" accept="image/*" style="display:none">
+
+        <div class="edit-channel-body">
+            <div class="avatar-edit-wrapper">
+                <div class="avatar-edit-circle" id="edit-avatar-preview" onclick="document.getElementById('avatar-input').click()"></div>
+                <span class="avatar-hint">Clique para trocar foto</span>
+            </div>
+
+            <p class="edit-info-text">
+                o nome do seu canal é <span id="current-name-label" style="color:#fff"></span>. deseja trocar?
+            </p>
+
+            <input type="text" id="edit-name-input" placeholder="novo nome do canal">
+
+            <label>descrição do canal</label>
+            <textarea id="edit-desc-input" rows="3" placeholder="descrição do canal"></textarea>
+
+            <button class="action-btn" onclick="salvarAlteracoesCanal()" style="margin-top:18px">Salvar Alterações</button>
+        </div>
+
+        <button class="logout-btn" onclick="sairDaConta()">sair da conta</button>
+    </div>
+
+    <script>
+        const SUPABASE_URL = "https://jkdrzqbdabdcilgdygdp.supabase.co";
+        const SUPABASE_KEY = "sb_publishable_SyKaRjAViq6fCiLYVp7IUQ_6kbt_s9W";
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        let canalAtual = JSON.parse(localStorage.getItem('witowwito_user')) || null;
+        let listaVideos = [];
+        let videoAtualAberto = null;
+        let tempThumbData = "";
+        let tempVideoFile = null;
+
+        window.onload = function() {
+            if (canalAtual) {
+                entrarNoApp();
+            } else {
+                sairDaConta();
+            }
+        };
+
+        function esconderTodasTelas() {
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('app-screen').style.display = 'none';
+            document.getElementById('upload-screen').style.display = 'none';
+            document.getElementById('video-screen').style.display = 'none';
+            document.getElementById('channel-screen').style.display = 'none';
+            document.getElementById('edit-channel-screen').style.display = 'none';
+            document.getElementById('profile-menu').style.display = 'none';
+        }
+
+        function fazerLogin() {
+            const nome = document.getElementById('username').value.trim();
+            const senha = document.getElementById('password').value.trim();
+            if (!nome || !senha) {
+                alert("voce nao colocou um desses, nome ou senha");
+                return;
+            }
+            canalAtual = {
+                nome: nome,
+                descricao: "Nenhuma descrição informada.",
+                avatar: ""
+            };
+            localStorage.setItem('witowwito_user', JSON.stringify(canalAtual));
+            entrarNoApp();
+        }
+
+        function entrarNoApp() {
+            esconderTodasTelas();
+            document.getElementById('app-screen').style.display = 'block';
+            document.getElementById('display-username').innerText = canalAtual.nome;
+            atualizarAvataresNasTelas();
+            document.getElementById('search-input').value = "";
+            renderizarFeed();
+        }
+
+        function atualizarAvataresNasTelas() {
+            const bgVal = (canalAtual && canalAtual.avatar) ? `url('${canalAtual.avatar}')` : 'none';
+            document.getElementById('main-user-avatar').style.backgroundImage = bgVal;
+            document.getElementById('channel-view-avatar').style.backgroundImage = bgVal;
+            document.getElementById('edit-avatar-preview').style.backgroundImage = bgVal;
+        }
+
+        function toggleUserMenu(e) {
+            e.stopPropagation();
+            const menu = document.getElementById('profile-menu');
+            menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
+        }
+
+        window.onclick = () => {
+            document.getElementById('profile-menu').style.display = 'none';
+        };
+
+        document.getElementById('avatar-input').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    canalAtual.avatar = event.target.result;
+                    atualizarAvataresNasTelas();
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        function abrirEditorUpload() {
+            esconderTodasTelas();
+            document.getElementById('upload-screen').style.display = 'block';
+            tempThumbData = "";
+            tempVideoFile = null;
+            document.getElementById('thumb-preview').style.backgroundImage = 'none';
+            document.getElementById('thumb-preview').innerText = "clique aqui para colocar a thumb\n(recomendado 1280x720)";
+            document.getElementById('video-file-label').innerText = "seu arquivo de video";
+            document.getElementById('upload-title').value = "";
+            document.getElementById('upload-desc').value = "";
+        }
+
+        document.getElementById('thumb-input').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    tempThumbData = event.target.result;
+                    const preview = document.getElementById('thumb-preview');
+                    preview.style.backgroundImage = `url(${tempThumbData})`;
+                    preview.innerText = "";
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        document.getElementById('video-file-input').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                tempVideoFile = file;
+                document.getElementById('video-file-label').innerText = file.name;
+            }
+        });
+
+        async function publicarVideo() {
+            const titulo = document.getElementById('upload-title').value.trim();
+            const desc = document.getElementById('upload-desc').value.trim();
+            if (!tempVideoFile || !titulo) {
+                alert("calma ae meu mano adcione um arquivo de video e um titulo!");
+                return;
+            }
+            const btn = document.getElementById('btn-publicar');
+            btn.innerText = "Enviando vídeo...";
+            btn.disabled = true;
+            try {
+                const fileName = `${Date.now()}_${tempVideoFile.name}`;
+                const { error: uploadErr } = await _supabase.storage.from('videos').upload(fileName, tempVideoFile);
+                if (uploadErr) {
+                    alert("Erro ao enviar o arquivo de vídeo: " + uploadErr.message);
+                    return;
+                }
+                const { data: publicUrlData } = _supabase.storage.from('videos').getPublicUrl(fileName);
+                const finalVideoUrl = publicUrlData.publicUrl;
+
+                const { error: dbErr } = await _supabase.from('videos').insert([{
+                    titulo: titulo,
+                    descricao: desc || "Sem descrição.",
+                    autor: canalAtual.nome,
+                    thumb: tempThumbData,
+                    videoUrl: finalVideoUrl,
+                    autor_avatar: canalAtual.avatar || ""
+                }]);
+
+                if (dbErr) {
+                    alert("Erro ao salvar no banco de dados: " + dbErr.message);
+                } else {
+                    alert("Vídeo publicado com sucesso!");
+                    voltarParaFeed();
+                }
+            } catch (err) {
+                alert("Ocorreu um erro no envio: " + err.message);
+            } finally {
+                btn.innerText = "Publicar Vídeo";
+                btn.disabled = false;
+            }
+        }
+
+        function criarVideoItem(v) {
+            const item = document.createElement('div');
+            item.className = 'video-item';
+            item.onclick = () => abrirVideoPlayer(v);
+
+            const thumbStyle = v.thumb ? `style="background-image: url('${v.thumb}')"` : "";
+            const thumbText = v.thumb ? "" : "sem capa amigo >:";
+            const avatarStyle = v.autor_avatar ? `style="background-image: url('${v.autor_avatar}')"` : "";
+            const descCurta = v.descricao && v.descricao !== "Sem descrição." ? v.descricao : "";
+
+            item.innerHTML = `
+                <div class="thumb" ${thumbStyle}>${thumbText}</div>
+                <div class="video-info">
+                    <div class="video-title">${v.titulo}</div>
+                    <div class="channel-row">
+                        <div class="channel-avatar-small" ${avatarStyle}></div>
+                        <div class="channel-name">${v.autor}</div>
+                    </div>
+                    ${descCurta ? `<div class="video-desc-preview">${descCurta}</div>` : ""}
+                </div>
+            `;
+            return item;
+        }
+
+        async function renderizarFeed(filtro = "") {
+            const feed = document.getElementById('feed-videos');
+            feed.innerHTML = `<div class="empty-message">Carregando vídeos...</div>`;
+
+            const { data, error } = await _supabase.from('videos').select('*').order('id', { ascending: false });
+
+            if (error || !data || data.length === 0) {
+                feed.innerHTML = `<div class="empty-message">infelizmente nao a nada postado no momento >:</div>`;
+                listaVideos = [];
+                return;
+            }
+
+            listaVideos = data;
+
+            let videosFiltrados = listaVideos;
+            if (filtro.trim() !== "") {
+                const termo = filtro.toLowerCase().trim();
+                videosFiltrados = listaVideos.filter(v =>
+                    (v.titulo && v.titulo.toLowerCase().includes(termo)) ||
+                    (v.descricao && v.descricao.toLowerCase().includes(termo)) ||
+                    (v.autor && v.autor.toLowerCase().includes(termo))
+                );
+            }
+
+            feed.innerHTML = "";
+
+            if (videosFiltrados.length === 0) {
+                feed.innerHTML = `<div class="empty-message">Nenhum vídeo encontrado para "${filtro}"</div>`;
+                return;
+            }
+
+            videosFiltrados.forEach(v => {
+                feed.appendChild(criarVideoItem(v));
+            });
+        }
+
+        function pesquisarVideos() {
+            const termo = document.getElementById('search-input').value;
+            renderizarFeed(termo);
+        }
+
+        function abrirVideoPlayer(video) {
+            esconderTodasTelas();
+            document.getElementById('video-screen').style.display = 'block';
+
+            videoAtualAberto = video;
+
+            const player = document.getElementById('player-real');
+            if (video.videoUrl) player.src = video.videoUrl;
+            player.play();
+
+            document.getElementById('watch-title').innerText = video.titulo;
+            document.getElementById('watch-desc').innerText = video.descricao;
+            document.getElementById('watch-channel-name').innerText = video.autor;
+
+            const avatarEl = document.getElementById('watch-channel-avatar');
+            if (video.autor_avatar) {
+                avatarEl.style.backgroundImage = `url('${video.autor_avatar}')`;
+            } else {
+                avatarEl.style.backgroundImage = 'none';
+            }
+        }
+
+        function abrirCanalDoVideo() {
+            if (!videoAtualAberto) return;
+
+            esconderTodasTelas();
+            document.getElementById('channel-screen').style.display = 'block';
+
+            document.getElementById('channel-view-name').innerText = videoAtualAberto.autor;
+            document.getElementById('channel-view-desc').innerText = "Canal de " + videoAtualAberto.autor;
+
+            const avatarEl = document.getElementById('channel-view-avatar');
+            if (videoAtualAberto.autor_avatar) {
+                avatarEl.style.backgroundImage = `url('${videoAtualAberto.autor_avatar}')`;
+            } else {
+                avatarEl.style.backgroundImage = 'none';
+            }
+
+            const container = document.getElementById('channel-videos-list');
+            container.innerHTML = "";
+
+            const videosDoCanal = listaVideos.filter(v => v.autor === videoAtualAberto.autor);
+
+            if (videosDoCanal.length === 0) {
+                container.innerHTML = `<p style="color:var(--text-sub); font-family:Arial;">Esse canal ainda não postou nada.</p>`;
+                return;
+            }
+
+            videosDoCanal.forEach(v => {
+                container.appendChild(criarVideoItem(v));
+            });
+        }
+
+        function voltarParaFeed() {
+            const player = document.getElementById('player-real');
+            player.pause();
+            player.src = "";
+            videoAtualAberto = null;
+            entrarNoApp();
+        }
+
+        function abrirMeuCanal() {
+            esconderTodasTelas();
+            document.getElementById('channel-screen').style.display = 'block';
+            document.getElementById('channel-view-name').innerText = canalAtual.nome;
+            document.getElementById('channel-view-desc').innerText = canalAtual.descricao;
+            atualizarAvataresNasTelas();
+
+            const container = document.getElementById('channel-videos-list');
+            container.innerHTML = "";
+
+            const meusVideos = listaVideos.filter(v => v.autor === canalAtual.nome);
+
+            if (meusVideos.length === 0) {
+                container.innerHTML = `<p style="color:var(--text-sub); font-family:Arial;">infelizmente tu nao postou nada que tal experimentar postar alguma coisa :></p>`;
+                return;
+            }
+
+            meusVideos.forEach(v => {
+                container.appendChild(criarVideoItem(v));
+            });
+        }
+
+        function abrirEditarCanal() {
+            esconderTodasTelas();
+            document.getElementById('current-name-label').innerText = canalAtual.nome;
+            document.getElementById('edit-name-input').value = canalAtual.nome;
+            document.getElementById('edit-desc-input').value = canalAtual.descricao;
+            atualizarAvataresNasTelas();
+            document.getElementById('edit-channel-screen').style.display = 'block';
+        }
+
+        function salvarAlteracoesCanal() {
+            const novoNome = document.getElementById('edit-name-input').value.trim();
+            const novaDesc = document.getElementById('edit-desc-input').value.trim();
+            if (novoNome) {
+                canalAtual.nome = novoNome;
+                canalAtual.descricao = novaDesc;
+                localStorage.setItem('witowwito_user', JSON.stringify(canalAtual));
+                voltarParaFeed();
+            } else {
+                alert("O nome do canal não pode ficar vazio!");
+            }
+        }
+
+        function sairDaConta() {
+            localStorage.removeItem('witowwito_user');
+            canalAtual = null;
+            esconderTodasTelas();
+            document.getElementById('username').value = "";
+            document.getElementById('password').value = "";
+            document.getElementById('login-screen').style.display = 'flex';
+        }
+    </script>
+</body>
+</html>
